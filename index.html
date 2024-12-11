@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kargo takip sistemi ile kargolarınızı anlık olarak takip edin.">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ersinonline">
+    <meta name="publisher" content="ersinonline - Ersin Çelik">
+    <meta name="copyright" content="ersinonline - Ersin Çelik">
+    <meta name="googlebot" content="noimageindex, notranslate">
+    <title>Kargo Takip | TeknoKapsül</title>
+    <link rel="shortcut icon" href="/Pictures/logo.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: #ffb700;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            color: white;
+            margin: 0;
+            font-size: 2em;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .container h1 {
+            margin-bottom: 30px;
+            font-size: 1.8em;
+            color: #ffb700;
+        }
+
+        .container input {
+            width: 100%;
+            padding: 15px;
+            margin: 12px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+            background-color: #f9f9f9;
+        }
+
+        .cargo-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .cargo-buttons button {
+            flex: 1 1 calc(25% - 10px);
+            background-color: white;
+            color: black;
+            border: 2px solid #ffb700;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            width: 100%;
+        }
+
+        .cargo-buttons button:hover {
+            background-color: #ffb700;
+            color: white;
+        }
+
+        .cargo-buttons button.active {
+            border-color: black;
+        }
+
+        .cargo-buttons button:focus {
+            outline: none;
+        }
+
+        .track-button {
+            background-color: #ffb700;
+            color: white;
+            border: none;
+            font-size: 1.1em;
+            cursor: pointer;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .track-button:hover {
+            background-color: #e69e00;
+        }
+
+        .recent-trackings {
+            margin-top: 30px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .recent-trackings h2 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            color: #333;
+        }
+
+        .recent-trackings ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .recent-trackings ul li {
+            background-color: #ffb700;
+            color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .recent-trackings ul li:hover {
+            background-color: #e69e00;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            height: 80%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .modal-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .close {
+            background-color: #ffb700;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+            }
+
+            .container h1 {
+                font-size: 1.6em;
+            }
+
+            .container input {
+                font-size: 0.9em;
+                padding: 12px;
+            }
+
+            .cargo-buttons button {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+
+            .track-button {
+                font-size: 1em;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Kargo Takip Sistemi</h1>
+        <form id="trackForm">
+            <input type="text" id="trackingNumber" placeholder="Kargo Takip Numarası" required>
+            
+            <div class="cargo-buttons">
+                <button type="button" data-cargo="aramex">Aramex</button>
+                <button type="button" data-cargo="aras">Aras</button>
+                <button type="button" data-cargo="hepsijet">Hepsijet</button>
+                <button type="button" data-cargo="jetizz">Jetizz</button>
+                <button type="button" data-cargo="kargoist">Kargoist</button>
+                <button type="button" data-cargo="mng">MNG</button>
+                <button type="button" data-cargo="ptt-kargo">PTT</button>
+                <button type="button" data-cargo="sendeo-kargo">Sendeo</button>
+                <button type="button" data-cargo="suratkargo">Sürat</button>
+                <button type="button" data-cargo="tex">TEX</button>
+                <button type="button" data-cargo="ups">UPS</button>
+                <button type="button" data-cargo="yurtiçi">Yurtiçi</button>
+                <button type="button" data-cargo="kargomsende">KargomSende</button>
+                <button type="button" data-cargo="kolay-gelsin">Kolay Gelsin</button>
+            </div>
+            
+            <button type="submit" class="track-button">Kargoyu Takip Et</button>
+        </form>
+      
+
+        <div class="recent-trackings">
+            <h2>En Son Takip Edilenler</h2>
+            <ul id="recentTrackings">
+                <!-- Son 3 takip numarası burada görüntülenecek -->
+            </ul>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button class="close" id="closeModal">Kapat</button>
+            <iframe id="trackingFrame" src=""></iframe>
+        </div>
+    </div>
+
+    <br>
+  
+    <footer>
+        © 2024 TeknoKapsül
+    </footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var form = document.getElementById('trackForm');
+        var trackingNumberInput = document.getElementById('trackingNumber');
+        var modal = document.getElementById('modal');
+        var trackingFrame = document.getElementById('trackingFrame');
+        var recentTrackings = JSON.parse(localStorage.getItem('recentTrackings')) || [];
+        var cargoButtons = document.querySelectorAll('.cargo-buttons button');
+
+        // Kargo firma butonlarına tıklanabilirlik ekleme
+        cargoButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                // Tüm butonlardan active sınıfını kaldır
+                cargoButtons.forEach(function(btn) {
+                    btn.classList.remove('active');
+                });
+
+                // Seçilen butona active sınıfını ekle
+                button.classList.add('active');
+            });
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            var trackingNumber = trackingNumberInput.value.trim();
+            if (!trackingNumber) {
+                alert("Lütfen geçerli bir takip numarası girin.");
+                return;
+            }
+
+            // Kargo firması butonlarına tıklanarak seçim yapılması sağlanmalı
+            var selectedButton = document.querySelector('.cargo-buttons button.active');
+            if (!selectedButton) {
+                alert("Lütfen bir kargo firması seçin.");
+                return;
+            }
+
+            var cargoCompany = selectedButton.getAttribute('data-cargo');
+            var url = '';
+
+            // **Yeni bir popup pencere ile açılması gereken kargo firmaları**
+            if (cargoCompany === 'aras') {
+                url = `https://kargotakip.araskargo.com.tr/mainpage.aspx?code=${trackingNumber}`;
+                openInPopup(url);
+            } else if (cargoCompany === 'kolay-gelsin') {
+                url = `https://esube.kolaygelsin.com/shipments/?trackingId=${trackingNumber}&lang=TR`;
+                openInPopup(url);
+            } else if (cargoCompany === 'mng') {
+                url = `https://kargotakip.mngkargo.com.tr/?takipNo=${trackingNumber}`;
+                openInPopup(url);
+            } else if (cargoCompany === 'ptt-kargo') {
+                url = `https://gonderitakip.ptt.gov.tr/Track/Verify?q=${trackingNumber}`;
+                openInPopup(url);
+            } else if (cargoCompany === 'sendeo-kargo') {
+                url = `https://sendeo.com.tr/tracking?q=${trackingNumber}`;
+                openInPopup(url);
+            } else if (cargoCompany === 'ups') {
+                url = `https://www.ups.com.tr/WaybillSorgu.aspx?Waybill=${trackingNumber}`;
+                openInPopup(url);
+            } else if (cargoCompany === 'jetizz') {
+                url = `https://app.jetizz.com/gonderi-takip?q=${trackingNumber}`;
+                openInPopup(url);
+            } else if (cargoCompany === 'aramex') {
+                url = `https://aramex.com/tr/tr/track/track-results-new?source=aramex&ShipmentNumber=${trackingNumber}`;
+                openInPopup(url);
+            }
+
+            // **Diğer kargo firmaları (iframe ile açılacak)**
+            else if (cargoCompany === 'kargomsende') {
+                url = `https://esube.kargomsende.com/kargom/takip/${trackingNumber}`;
+                openIframe(url);
+            } else if (cargoCompany === 'kargoist') {
+                url = `https://kargotakip.kargoist.com/tracking?har_kod=${trackingNumber}`;
+                openIframe(url);
+            }
+            else if (cargoCompany === 'suratkargo') {
+                url = `https://suratkargo.com.tr/KargoTakip/?KARGOTAKIPNO=${trackingNumber}`;
+                openIframe(url);
+            } else if (cargoCompany === 'hepsijet') {
+                url = `https://hepsijet.com/gonderi-takibi/${trackingNumber}`;
+                openIframe(url);
+            } else if (cargoCompany === 'tex') {
+                url = `https://kargotakip.trendyol.com/?orderNumber=${trackingNumber}`;
+                openIframe(url);
+            } else if (cargoCompany === 'yurtiçi') {
+                url = `https://yurticikargo.com/tr/online-servisler/gonderi-sorgula?code=${trackingNumber}`;
+                openIframe(url);
+            }
+
+            // Son takip numarasını kaydedelim
+            if (!recentTrackings.includes(trackingNumber)) {
+                recentTrackings.push(trackingNumber);
+                if (recentTrackings.length > 2) {
+                    recentTrackings.shift();
+                }
+                localStorage.setItem('recentTrackings', JSON.stringify(recentTrackings));
+            }
+
+            displayRecentTrackings();
+        });
+
+        // Popup pencere ile açma fonksiyonu
+        function openInPopup(url) {
+            window.open(url, 'Kargo Takip', 'width=800,height=600,scrollbars=yes,resizable=yes');
+        }
+
+        // iframe içinde popup açma fonksiyonu
+        function openIframe(url) {
+            trackingFrame.src = url;
+            modal.style.display = 'flex';
+        }
+
+        // Son takip numaralarını ekranda gösterme
+        function displayRecentTrackings() {
+            var recentList = document.getElementById('recentTrackings');
+            recentList.innerHTML = '';
+
+            recentTrackings.forEach(function(trackingNumber) {
+                var listItem = document.createElement('li');
+                listItem.textContent = trackingNumber;
+                listItem.onclick = function() {
+                    trackingNumberInput.value = trackingNumber;
+                };
+                recentList.appendChild(listItem);
+            });
+        }
+
+        // Modal'ı kapatma
+        document.getElementById('closeModal').addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        // Sayfa yüklendiğinde son takipleri göster
+        window.onload = displayRecentTrackings;
+    });
+</script>
+
+</body>
+</html>
